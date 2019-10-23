@@ -15,7 +15,7 @@ wget --no-check-certificate -q $BASEURL/client/mqrun.sh -O $LOCALSCRIPTDIR/mqrun
 wget --no-check-certificate -q $BASEURL/client/mqpub-static.sh -O $LOCALSCRIPTDIR/mqpub-static.sh
 wget --no-check-certificate -q $BASEURL/client/mqpub.sh -O $LOCALSCRIPTDIR/mqpub.sh
 wget --no-check-certificate -q $BASEURL/client/mqsub.sh -O $LOCALSCRIPTDIR/mqsub.sh
-wget --no-check-certificate -q $BASEURL/client/mqstop.sh -O $LOCALSCRIPTDIR/mqtask.sh
+wget --no-check-certificate -q $BASEURL/client/mqtask.sh -O $LOCALSCRIPTDIR/mqtask.sh
 
 if [ ! -f $LOCALSCRIPTDIR/mpower-pub.cfg ]; then
     wget --no-check-certificate -q $BASEURL/client/mpower-pub.cfg -O $LOCALSCRIPTDIR/mpower-pub.cfg
@@ -38,7 +38,7 @@ chmod 755 $LOCALSCRIPTDIR/mqsub.sh
 chmod 755 $LOCALSCRIPTDIR/mqtask.sh
 
 [ -f $LOCALSCRIPTDIR/mqstop.sh ] && rm -f $LOCALSCRIPTDIR/mqstop.sh
-ln -s $LOCALSCRIPTDIR/mqrun.sh mqstop.sh
+ln -s $LOCALSCRIPTDIR/mqrun.sh $LOCALSCRIPTDIR/mqstop.sh
 
 poststart=/etc/persistent/rc.poststart
 startscript="sleep 10; $LOCALSCRIPTDIR/mqrun.sh"
