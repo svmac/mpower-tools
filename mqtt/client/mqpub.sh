@@ -23,6 +23,8 @@ export pfactor
 $BIN_PATH/client/mqpub-static.sh
 
 loop_wait=2
+[ $PORTS -eq 1 ] && loop_wait=1
+
 for i in $(seq $PORTS);	do
 if [ $power -eq 1 ]; then
 	# current power
