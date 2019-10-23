@@ -13,8 +13,6 @@ log "Publishing to $mqtthost with topic $topic"
 REFRESHCOUNTER=$refresh
 FASTUPDATE=0
 
-
-export relay
 export power
 export energy
 export voltage
@@ -49,17 +47,15 @@ ra=""
 la=""
 
 while sleep $loop_wait; do
-    if [ $relay -eq 1 ]; then
-        # relay state
-		rr=$(cat /proc/power/relay*)
-		if [ "$rr" != "$ra" ]; then
-			for i in $(seq $PORTS); do
-				relay_val=$(cat /proc/power/relay$i)
-				[ $relay_val -ne 1 ] &&	relay_val=0
-				$PUBBIN -h $mqtthost $auth -t $topic/port$i/relay -m "$relay_val" -r
-			done
-			ra=$rr
-		fi
+    # relay state
+    rr=$(cat /proc/power/relay*)
+    if [ "$rr" != "$ra" ]; then
+        for i in $(seq $PORTS); do
+            relay_val=$(cat /proc/power/relay$i)
+            [ $relay_val -ne 1 ] &&	relay_val=0
+            $PUBBIN -h $mqtthost $auth -t $topic/port$i/relay -m "$relay_val" -r
+        done
+        ra=$rr
     fi
     if [ $lock -eq 1 ]; then
         # lock

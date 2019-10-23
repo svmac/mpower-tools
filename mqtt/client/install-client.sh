@@ -2,7 +2,7 @@
 
 LOCALDIR="/var/etc/persistent/mqtt"
 LOCALSCRIPTDIR=$LOCALDIR/client
-BASEURL="https://raw.githubusercontent.com/magcode/mpower-tools/master/mqtt"
+BASEURL="https://raw.githubusercontent.com/svmac/mpower-tools/V4.0.0/mqtt"
 
 echo "Installing mPower MQTT v2 ..."
 wget --no-check-certificate -q $BASEURL/libmosquitto.so.1?raw=true -O $LOCALDIR/libmosquitto.so.1
@@ -15,7 +15,7 @@ wget --no-check-certificate -q $BASEURL/client/mqrun.sh -O $LOCALSCRIPTDIR/mqrun
 wget --no-check-certificate -q $BASEURL/client/mqpub-static.sh -O $LOCALSCRIPTDIR/mqpub-static.sh
 wget --no-check-certificate -q $BASEURL/client/mqpub.sh -O $LOCALSCRIPTDIR/mqpub.sh
 wget --no-check-certificate -q $BASEURL/client/mqsub.sh -O $LOCALSCRIPTDIR/mqsub.sh
-wget --no-check-certificate -q $BASEURL/client/mqstop.sh -O $LOCALSCRIPTDIR/mqstop.sh
+wget --no-check-certificate -q $BASEURL/client/mqstop.sh -O $LOCALSCRIPTDIR/mqtask.sh
 
 if [ ! -f $LOCALSCRIPTDIR/mpower-pub.cfg ]; then
     wget --no-check-certificate -q $BASEURL/client/mpower-pub.cfg -O $LOCALSCRIPTDIR/mpower-pub.cfg
@@ -35,7 +35,10 @@ chmod 755 $LOCALSCRIPTDIR/mqrun.sh
 chmod 755 $LOCALSCRIPTDIR/mqpub-static.sh
 chmod 755 $LOCALSCRIPTDIR/mqpub.sh
 chmod 755 $LOCALSCRIPTDIR/mqsub.sh
-chmod 755 $LOCALSCRIPTDIR/mqstop.sh
+chmod 755 $LOCALSCRIPTDIR/mqtask.sh
+
+[ -f $LOCALSCRIPTDIR/mqstop.sh ] && rm -f $LOCALSCRIPTDIR/mqstop.sh
+ln -s $LOCALSCRIPTDIR/mqrun.sh mqstop.sh
 
 poststart=/etc/persistent/rc.poststart
 startscript="sleep 10; $LOCALSCRIPTDIR/mqrun.sh"

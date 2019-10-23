@@ -18,36 +18,13 @@ $PUBBIN -h $mqtthost $auth -t $topic/\$fw/name -m "mPower MQTT" -r
 #$PUBBIN -h $mqtthost $auth -t $topic/\$stats/uptime -m "$UPTIME" -r
 
 properties=relay
+[ $energy -eq 1 ] && properties=$properties,energy
+[ $power -eq 1 ] && properties=$properties,power
+[ $voltage -eq 1 ] && properties=$properties,voltage
+[ $lock -eq 1 ] && properties=$properties,lock
+[ $current -eq 1 ] && properties=$properties,current
+[ $pfactor -eq 1 ] && properties=$properties,pf
 
-if [ $energy -eq 1 ]
-then
-    properties=$properties,energy
-fi
-
-if [ $power -eq 1 ]
-then
-    properties=$properties,power
-fi
-
-if [ $voltage -eq 1 ]
-then
-    properties=$properties,voltage
-fi
-
-if [ $lock -eq 1 ]
-then
-    properties=$properties,lock
-fi
-
-if [ $current -eq 1 ]
-then
-    properties=$properties,current
-fi
-
-if [ $pfactor -eq 1 ]
-then
-    properties=$properties,pf
-fi
 # node infos
 for i in $(seq $PORTS); do
 	name=$(cat /var/etc/persistent/cfg/config_file | grep port.$((i-1)).label | sed 's/.*=\(.*\)/\1/')
@@ -55,11 +32,38 @@ for i in $(seq $PORTS); do
     $PUBBIN -h $mqtthost $auth -t $topic/port$i/\$name -m "$name" -r
     $PUBBIN -h $mqtthost $auth -t $topic/port$i/\$type -m "power switch" -r
     $PUBBIN -h $mqtthost $auth -t $topic/port$i/\$properties -m "$properties" -r
-	if [ $relay -eq 1 ]; then
-		$PUBBIN -h $mqtthost $auth -t $topic/port$i/relay/\$settable -m "true" -r
-	fi
+	$PUBBIN -h $mqtthost $auth -t $topic/port$i/relay/\$name -m "$name relay" -r
+	$PUBBIN -h $mqtthost $auth -t $topic/port$i/relay/\$datatype -m "integer" -r
+	$PUBBIN -h $mqtthost $auth -t $topic/port$i/relay/\$settable -m "true" -r
 	if [ $lock -eq 1 ]; then
+        $PUBBIN -h $mqtthost $auth -t $topic/port$i/lock/\$name -m "$name lock" -r
+        $PUBBIN -h $mqtthost $auth -t $topic/port$i/lock/\$datatype -m "integer" -r
         $PUBBIN -h $mqtthost $auth -t $topic/port$i/lock/\$settable -m "true" -r
+	fi
+	if [ $energy -eq 1 ]; then
+        $PUBBIN -h $mqtthost $auth -t $topic/port$i/energy/\$name -m "$name energy" -r
+        $PUBBIN -h $mqtthost $auth -t $topic/port$i/energy/\$datatype -m "integer" -r
+        $PUBBIN -h $mqtthost $auth -t $topic/port$i/energy/\$unit -m "Wh" -r
+	fi
+	if [ $power -eq 1 ]; then
+        $PUBBIN -h $mqtthost $auth -t $topic/port$i/power/\$name -m "$name power" -r
+        $PUBBIN -h $mqtthost $auth -t $topic/port$i/power/\$datatype -m "float" -r
+        $PUBBIN -h $mqtthost $auth -t $topic/port$i/power/\$unit -m "W" -r
+	fi
+	if [ $voltage -eq 1 ]; then
+        $PUBBIN -h $mqtthost $auth -t $topic/port$i/voltage/\$name -m "$name voltage" -r
+        $PUBBIN -h $mqtthost $auth -t $topic/port$i/voltage/\$datatype -m "float" -r
+        $PUBBIN -h $mqtthost $auth -t $topic/port$i/voltage/\$unit -m "V" -r
+	fi
+	if [ $current -eq 1 ]; then
+        $PUBBIN -h $mqtthost $auth -t $topic/port$i/current/\$name -m "$name current" -r
+        $PUBBIN -h $mqtthost $auth -t $topic/port$i/current/\$datatype -m "float" -r
+        $PUBBIN -h $mqtthost $auth -t $topic/port$i/current/\$unit -m "A" -r
+	fi
+	if [ $pfactor -eq 1 ]; then
+        $PUBBIN -h $mqtthost $auth -t $topic/port$i/pf/\$name -m "$name pf" -r
+        $PUBBIN -h $mqtthost $auth -t $topic/port$i/pf/\$datatype -m "float" -r
+        $PUBBIN -h $mqtthost $auth -t $topic/port$i/pf/\$unit -m "%" -r
 	fi
 done
 
