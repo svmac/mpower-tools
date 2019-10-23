@@ -51,8 +51,8 @@ while sleep $loop_wait; do
     rr=$(cat /proc/power/relay*)
     if [ "$rr" != "$ra" ]; then
         for i in $(seq $PORTS); do
-            relay_val=$(cat /proc/power/relay$i)
-            [ $relay_val -ne 1 ] &&	relay_val=0
+            relay_val=ON
+            [ $(cat /proc/power/relay$i) -ne 1 ] &&	relay_val=OFF
             $PUBBIN -h $mqtthost $auth -t $topic/port$i/relay -m "$relay_val" -r
         done
         ra=$rr
@@ -62,7 +62,8 @@ while sleep $loop_wait; do
 		ll=$(cat /proc/power/lock*)
 		if [ "$ll" != "$la" ]; then
 			for i in $(seq $PORTS); do
-				port_val=$(cat /proc/power/lock$i)
+				port_val=ON
+                [ $(cat /proc/power/lock$i) -ne 1 ] &&	port_val=OFF
 				$PUBBIN -h $mqtthost $auth -t $topic/port$i/lock -m "$port_val" -r
 			done
 			la=$ll

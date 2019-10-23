@@ -13,6 +13,8 @@ fi
 # it should not blink
 echo 0 > /proc/led/freq
 
+while sleep 2; do
+
 log "MQTT listening..."
 $BIN_PATH/mosquitto_sub -I $clientID -h $mqtthost $auth -v -t $topic/+/+/set \
 --will-topic $topic/\$state --will-retain --will-qos 1 --will-payload 'lost' \
@@ -42,7 +44,7 @@ $BIN_PATH/mosquitto_sub -I $clientID -h $mqtthost $auth -v -t $topic/+/+/set \
         fi
         log "MQTT request received. $property control for port" $port "with value" $inputVal
         `echo $val > /proc/power/$property$port`
-        echo 5 > $tmpfile
+        #echo 5 > $tmpfile
 
         # led handling for relay_off
         if [ -n "$relay_off" ]
@@ -63,4 +65,6 @@ $BIN_PATH/mosquitto_sub -I $clientID -h $mqtthost $auth -v -t $topic/+/+/set \
           fi
         fi
     fi
+done
+
 done

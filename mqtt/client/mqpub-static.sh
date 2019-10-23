@@ -33,11 +33,13 @@ for i in $(seq $PORTS); do
     $PUBBIN -h $mqtthost $auth -t $topic/port$i/\$type -m "power switch" -r
     $PUBBIN -h $mqtthost $auth -t $topic/port$i/\$properties -m "$properties" -r
 	$PUBBIN -h $mqtthost $auth -t $topic/port$i/relay/\$name -m "$name relay" -r
-	$PUBBIN -h $mqtthost $auth -t $topic/port$i/relay/\$datatype -m "integer" -r
+	$PUBBIN -h $mqtthost $auth -t $topic/port$i/relay/\$datatype -m "enum" -r
+    $PUBBIN -h $mqtthost $auth -t $topic/port$i/relay/\$format -m "ON,OFF" -r
 	$PUBBIN -h $mqtthost $auth -t $topic/port$i/relay/\$settable -m "true" -r
 	if [ $lock -eq 1 ]; then
         $PUBBIN -h $mqtthost $auth -t $topic/port$i/lock/\$name -m "$name lock" -r
-        $PUBBIN -h $mqtthost $auth -t $topic/port$i/lock/\$datatype -m "integer" -r
+        $PUBBIN -h $mqtthost $auth -t $topic/port$i/lock/\$datatype -m "enum" -r
+        $PUBBIN -h $mqtthost $auth -t $topic/port$i/lock/\$format -m "ON,OFF" -r
         $PUBBIN -h $mqtthost $auth -t $topic/port$i/lock/\$settable -m "true" -r
 	fi
 	if [ $energy -eq 1 ]; then

@@ -34,13 +34,7 @@ killall mqpub.sh
 killall mqsub.sh
 pkill -f mosquitto_sub.*$clientID
 $PUBBIN -h $mqtthost $auth -t $topic/\$state -m "disconnected" -r
-[ "$0" == "mqstop.sh" ] && exit
-
-# make sure the MQTT fast update request file exists
-rm /tmp/mqtmp.*
-tmpfile=$(mktemp /tmp/mqtmp.XXXXXXXXXX)
-log "Using temp file "$tmpfile
-echo 0 > $tmpfile
+[ "$(basename $0)" == "mqstop.sh" ] && exit
 
 # make our settings available to the subscripts
 export mqtthost
