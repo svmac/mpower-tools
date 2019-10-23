@@ -1,7 +1,7 @@
 #!/bin/sh
 
 log() {
-	logger -s -t "mqtt" "$*"
+   logger -s -t "mqtt" "$*"
 }
 
 export LD_LIBRARY_PATH=/var/etc/persistent/mqtt
@@ -9,9 +9,10 @@ export BIN_PATH=/etc/persistent/mqtt
 export devicename=$(cat /tmp/system.cfg | grep resolv.host.1.name | sed 's/.*=\(.*\)/\1/')
 export topic=homie/$devicename
 export clientID="MPMQCLIENT"
+export PUBBIN=$BIN_PATH/mosquitto_pub
 
 refresh=60
-version=$(cat /etc/version)-mq-0.2
+version=$(cat /etc/version)-mq-0.3
 
 source $BIN_PATH/client/mqtt.cfg
 
@@ -27,7 +28,13 @@ else
 fi
 
 # lets stop any process from former start attempts
-$BIN_PATH/client/mqstop.sh
+log "killing old instances"
+killall mqtask.sh
+killall mqpub.sh
+killall mqsub.sh
+pkill -f mosquitto_sub.*$clientID
+$PUBBIN -h $mqtthost $auth -t $topic/\$state -m "disconnected" -r
+[ "$0" == "mqstop.sh" ] && exit
 
 # make sure the MQTT fast update request file exists
 rm /tmp/mqtmp.*
@@ -38,6 +45,7 @@ echo 0 > $tmpfile
 # make our settings available to the subscripts
 export mqtthost
 export refresh
+export percentvar
 export tmpfile
 export version
 # identify type of mpower
