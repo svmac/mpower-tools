@@ -4,7 +4,12 @@ $PUBBIN -h $mqtthost $auth -t $topic/\$state -m "init" -r
 $PUBBIN -h $mqtthost $auth -t $topic/\$homie -m "4.0.0" -r
 $PUBBIN -h $mqtthost $auth -t $topic/\$name -m "$devicename" -r
 
-NODES=`seq $PORTS | sed 's/\([0-9]\)/port\1/' |  tr '\n' , | sed 's/.$//'`
+LABELS=$(cat /var/etc/persistent/cfg/config_file | grep label)
+if [ "$LABELS" == "" ]; then
+	NODES=`seq $PORTS | sed 's/\([0-9]\)/port\1/' | tr '\n' , | sed 's/.$//'`
+else
+	NODES=$(echo "$LABELS" | sed 's/.*=\(.*\)/\1/' | tr '\n' , | sed 's/.$//')
+fi
 $PUBBIN -h $mqtthost $auth -t $topic/\$nodes -m "$NODES" -r
 $PUBBIN -h $mqtthost $auth -t $topic/\$extensions -m "" -r
 $PUBBIN -h $mqtthost $auth -t $topic/\$implementation  -m "mpower" -r
@@ -27,7 +32,7 @@ properties=relay
 
 # node infos
 for i in $(seq $PORTS); do
-	name=$(cat /var/etc/persistent/cfg/config_file | grep port.$((i-1)).label | sed 's/.*=\(.*\)/\1/')
+	name=$(echo "$LABELS" | grep $((i-1)).label | sed 's/.*=\(.*\)/\1/')
 	[ "$name" == "" ] && name="Port $i"
     $PUBBIN -h $mqtthost $auth -t $topic/port$i/\$name -m "$name" -r
     $PUBBIN -h $mqtthost $auth -t $topic/port$i/\$type -m "power switch" -r

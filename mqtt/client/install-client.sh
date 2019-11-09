@@ -16,6 +16,7 @@ wget --no-check-certificate -q $BASEURL/client/mqpub-static.sh -O $LOCALSCRIPTDI
 wget --no-check-certificate -q $BASEURL/client/mqpub.sh -O $LOCALSCRIPTDIR/mqpub.sh
 wget --no-check-certificate -q $BASEURL/client/mqsub.sh -O $LOCALSCRIPTDIR/mqsub.sh
 wget --no-check-certificate -q $BASEURL/client/mqtask.sh -O $LOCALSCRIPTDIR/mqtask.sh
+wget --no-check-certificate -q $BASEURL/client/update-client.sh -O $LOCALSCRIPTDIR/update-client.sh
 
 if [ ! -f $LOCALSCRIPTDIR/mpower-pub.cfg ]; then
     wget --no-check-certificate -q $BASEURL/client/mpower-pub.cfg -O $LOCALSCRIPTDIR/mpower-pub.cfg
@@ -36,6 +37,7 @@ chmod 755 $LOCALSCRIPTDIR/mqpub-static.sh
 chmod 755 $LOCALSCRIPTDIR/mqpub.sh
 chmod 755 $LOCALSCRIPTDIR/mqsub.sh
 chmod 755 $LOCALSCRIPTDIR/mqtask.sh
+chmod 755 $LOCALSCRIPTDIR/update-client.sh
 
 [ -f $LOCALSCRIPTDIR/mqstop.sh ] && rm -f $LOCALSCRIPTDIR/mqstop.sh
 ln -s $LOCALSCRIPTDIR/mqrun.sh $LOCALSCRIPTDIR/mqstop.sh

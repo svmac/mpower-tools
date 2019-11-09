@@ -73,6 +73,7 @@ while sleep $loop_wait; do
     fi
     ss=$(date +%s)
 	if [ $ss -gt $sa ]; then
+		$PUBBIN -h $mqtthost $auth -t $topic/\$state -m "ready" -r
 		$PUBBIN -h $mqtthost $auth -t $topic/\$stats/uptime -m "$(awk '{print int($1/60)}' /proc/uptime)" -r
 		$PUBBIN -h $mqtthost $auth -t $topic/uptime -m "$(uptime)" -r
         sa=$(( ss + refresh ))
