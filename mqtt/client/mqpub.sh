@@ -76,6 +76,7 @@ while sleep $loop_wait; do
 		$PUBBIN -h $mqtthost $auth -t $topic/\$state -m "ready" -r
 		$PUBBIN -h $mqtthost $auth -t $topic/\$stats/uptime -m "$(awk '{print int($1/60)}' /proc/uptime)" -r
 		$PUBBIN -h $mqtthost $auth -t $topic/uptime -m "$(uptime)" -r
+		$PUBBIN -h $mqtthost $auth -t $topic/ocupacion -m "$(df -h . | egrep -o '[0-9]+%' | tr -d '%')" -r
         sa=$(( ss + refresh ))
 		if [ $energy -eq 1 ]; then
 			# energy consumption
